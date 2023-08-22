@@ -1,9 +1,3 @@
-const ROWS = 50;
-const COLS = 50;
-const SEED = 12;
-
-export const TICK = 100;
-
 export type State = 1 | 0;
 type Grid = State[][];
 
@@ -16,13 +10,13 @@ const mulberry32 = (seed: number) => {
   };
 };
 
-export const makeGrid = (): Grid => {
-  const generator = mulberry32(SEED);
+export const makeGrid = (rows: number, cols: number, seed: number): Grid => {
+  const generator = mulberry32(seed);
 
   const grid: Grid = [];
-  for (let i = 0; i < ROWS; i++) {
+  for (let i = 0; i < rows; i++) {
     const row: State[] = [];
-    for (let j = 0; j < COLS; j++) {
+    for (let j = 0; j < cols; j++) {
       const value = generator();
       row.push(value <= 0.5 ? 1 : 0);
     }
@@ -43,11 +37,14 @@ const neighbors = [
   [1, 1],
 ];
 const checkNeighbors = (grid: Grid, row: number, col: number): number => {
+  const rows = grid.length;
+  const cols = grid[0].length;
+
   let count = 0;
 
   for (const [r, c] of neighbors) {
-    const nRow = (row + c + ROWS) % ROWS;
-    const nCol = (col + r + COLS) % COLS;
+    const nRow = (row + r + rows) % rows;
+    const nCol = (col + c + cols) % cols;
 
     const neighbor = grid[nRow]?.[nCol];
 
@@ -60,11 +57,14 @@ const checkNeighbors = (grid: Grid, row: number, col: number): number => {
 };
 
 export const updateGrid = (grid: Grid): Grid => {
+  const rows = grid.length;
+  const cols = grid[0].length;
+
   const newGrid: Grid = [];
 
-  for (let i = 0; i < ROWS; i++) {
+  for (let i = 0; i < rows; i++) {
     const row: State[] = [];
-    for (let j = 0; j < COLS; j++) {
+    for (let j = 0; j < cols; j++) {
       const value = grid[i][j];
       const count = checkNeighbors(grid, i, j);
 
