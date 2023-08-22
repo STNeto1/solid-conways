@@ -1,9 +1,10 @@
 const ROWS = 50;
 const COLS = 50;
+const SEED = 12;
 
-export const TICK = 1000;
+export const TICK = 100;
 
-type State = 1 | 0;
+export type State = 1 | 0;
 type Grid = State[][];
 
 const mulberry32 = (seed: number) => {
@@ -16,16 +17,14 @@ const mulberry32 = (seed: number) => {
 };
 
 export const makeGrid = (): Grid => {
-  const generator = mulberry32(Math.random() * 1000);
+  const generator = mulberry32(SEED);
 
   const grid: Grid = [];
   for (let i = 0; i < ROWS; i++) {
     const row: State[] = [];
     for (let j = 0; j < COLS; j++) {
       const value = generator();
-      console.log(value);
-
-      row.push(value <= 0.1 ? 1 : 0);
+      row.push(value <= 0.5 ? 1 : 0);
     }
     grid.push(row);
   }
@@ -47,8 +46,8 @@ const checkNeighbors = (grid: Grid, row: number, col: number): number => {
   let count = 0;
 
   for (const [r, c] of neighbors) {
-    const nRow = row + r;
-    const nCol = col + c;
+    const nRow = (row + c + ROWS) % ROWS;
+    const nCol = (col + r + COLS) % COLS;
 
     const neighbor = grid[nRow]?.[nCol];
 
