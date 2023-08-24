@@ -18,7 +18,7 @@ export const makeGrid = (rows: number, cols: number, seed: number): Grid => {
     const row: State[] = [];
     for (let j = 0; j < cols; j++) {
       const value = generator();
-      row.push(value <= 0.5 ? 1 : 0);
+      row.push(value > 0.8 ? 1 : 0);
     }
     grid.push(row);
   }

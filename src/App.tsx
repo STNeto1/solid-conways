@@ -2,7 +2,6 @@ import {
   createSignal,
   type Component,
   For,
-  onMount,
   createEffect,
   onCleanup,
 } from "solid-js";
@@ -21,19 +20,25 @@ const Cell: Component<{ state: State }> = (props) => {
 };
 
 const App: Component = () => {
-  const [seed, setSeed] = createSignal(20);
-  const [rows, setRows] = createSignal(20);
-  const [columns, setColumns] = createSignal(20);
-  const [tick, setTick] = createSignal(200);
+  const [seed, setSeed] = createSignal(40);
+  const [rows, setRows] = createSignal(40);
+  const [columns, setColumns] = createSignal(90);
+  const [tick, setTick] = createSignal(500);
 
   const [grid, setGrid] = createSignal(makeGrid(rows(), columns(), seed()));
 
   createEffect(() => {
-    if ([rows(), columns(), seed(), tick()].some((f) => f === 0)) {
+    if ([rows(), columns(), seed()].some((f) => f === 0)) {
       return;
     }
 
     setGrid(makeGrid(rows(), columns(), seed()));
+  });
+
+  createEffect(() => {
+    if (tick() === 0) {
+      return;
+    }
 
     const ref = setInterval(() => {
       setGrid(updateGrid(grid()));
